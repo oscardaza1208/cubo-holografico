@@ -2,50 +2,47 @@
 <html lang="es">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Candado 3D + Mensaje Anti‑Phishing (sin cámara)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Candado 3D + Anti‑Phishing (Optimizado Móvil)</title>
 
   <!-- A‑Frame: CDN principal -->
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-  <!-- Fallback por si el CDN principal está bloqueado -->
+  <!-- Fallback si el CDN principal está bloqueado -->
   <script>
     if (!window.AFRAME) {
-      document.write('<script src="https://unpkg.com/aframe@1.5.0/dist/aframe.min.js"><\/script>');
+      var s=document.createElement('script');
+      s.src='https://unpkg.com/aframe@1.5.0/dist/aframe.min.js';
+      document.head.appendChild(s);
     }
   </script>
 
   <style>
+    :root { --pad: max(12px, env(safe-area-inset-top)); }
     html,body { height:100%; margin:0; background:#0d1117; }
-    /* Tarjeta superior llamativa */
+    /* Tarjeta superior llamativa (sin botones) */
     .banner {
       position: fixed; left: 50%; transform: translateX(-50%);
-      top: 14px; z-index: 10; width: min(960px, 92vw);
-      background: linear-gradient(135deg, #fff8e1 0%, #fff3c0 100%);
-      color: #263238; padding: 14px 16px; border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.25), 0 2px 8px rgba(0,0,0,.12);
-      font: 500 16px/1.45 "Segoe UI", Roboto, system-ui, -apple-system, Arial, sans-serif;
+      top: var(--pad); z-index: 10; width: min(960px, 92vw);
+      background: linear-gradient(135deg, #fff8e1 0%, #ffeaa7 100%);
+      color: #263238; padding: 12px 14px; border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.28), 0 2px 8px rgba(0,0,0,.12);
+      font: 500 15px/1.45 "Segoe UI", Roboto, system-ui, -apple-system, Arial, sans-serif;
     }
-    .banner .title {
-      display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px;
-    }
+    .banner .title { display:flex; align-items:center; gap:10px; font-weight:800; font-size:18px; }
     .badge {
       display:inline-flex; align-items:center; gap:6px;
-      background:#ff7043; color:#fff; padding:2px 10px; border-radius:999px; font-weight:700; font-size:12px;
+      background:#ff7043; color:#fff; padding:3px 10px; border-radius:999px; font-weight:800; font-size:12px;
       box-shadow: 0 2px 8px rgba(255,112,67,.45);
     }
-    .tips { margin-top:6px; font-size:14px; color:#37474f; }
-    .tips li { margin: 4px 0; }
-    .cta {
-      margin-top:8px; display:inline-block; background:#1e88e5; color:#fff; text-decoration:none;
-      padding:8px 12px; border-radius:8px; font-weight:700; font-size:13px; box-shadow:0 2px 10px rgba(30,136,229,.35);
-    }
-    .cta:hover { background:#1769aa; }
-    /* Etiqueta discreta inferior para créditos/tema */
+    .tips { margin:6px 0 0 0; font-size:14px; color:#37474f; padding-left:18px; }
+    .tips li { margin: 3px 0; }
     .footer-tag {
       position: fixed; right: 12px; bottom: 10px; z-index: 10;
       font: 600 12px/1 "Segoe UI", Roboto, system-ui, -apple-system, Arial, sans-serif;
       color:#90caf9; opacity:.9;
     }
+    /* Asegura que el lienzo 3D llene la pantalla bajo la tarjeta */
+    a-scene { position: fixed; inset: 0; }
   </style>
 </head>
 <body>
@@ -59,40 +56,46 @@
     <ul class="tips">
       <li><b>Verifica</b> remitente y <b>dominio</b> antes de responder.</li>
       <li><b>No</b> abras enlaces ni archivos sospechosos.</li>
-      <li><b>Reporta</b> de inmediato al equipo de Seguridad de la Información.</li>
+      <li><b>Desconfía</b> de urgencias, premios o solicitudes inusuales.</li>
     </ul>
-    <!-- Cambia el href por tu correo o formulario corporativo si lo deseas -->
-    <a class="cta" href="mailto:seguridad@tuempresa.com?subject=Posible%20phishing&body=Adjunta%20capturas%20y%20el%20correo%20recibido.">Reportar sospecha</a>
   </div>
 
   <div class="footer-tag">Semana de Seguridad • Concientización</div>
 
-  <!-- Escena 3D sin usar cámara -->
-  <a-scene renderer="antialias: true; colorManagement: true" background="color: #0d1117">
+  <!-- Escena 3D (sin cámara) -->
+  <a-scene renderer="antialias:true; colorManagement:true" background="color: #0d1117">
     <!-- Luces -->
-    <a-entity light="type: ambient; color: #b0bec5; intensity: 0.9"></a-entity>
+    <a-entity light="type: ambient; color: #b0bec5; intensity: 1.0"></a-entity>
     <a-entity light="type: directional; color: #ffffff; intensity: 0.9" position="1 2 1"></a-entity>
-    <a-entity light="type: point; color: #64b5f6; intensity: 0.6" position="-1 1.8 1"></a-entity>
+    <!-- Luz que orbita alrededor del candado -->
+    <a-entity id="orbital" position="0 1.25 -3" animation="property: rotation; to: 0 360 0; loop:true; dur: 6000; easing: linear">
+      <a-entity light="type: point; color:#00e5ff; intensity:0.7; distance:5" position="1 0.3 0"></a-entity>
+    </a-entity>
 
-    <!-- Piso/base holográfica -->
-    <a-ring radius-inner="1.0" radius-outer="1.2" rotation="-90 0 0" position="0 0 -3"
-            material="color: #00e5ff; opacity: 0.25; metalness:0.2; roughness:0.3"></a-ring>
+    <!-- Base holográfica (más viva) -->
+    <a-ring radius-inner="0.9" radius-outer="1.2" rotation="-90 0 0" position="0 0 -3"
+            material="color:#00e5ff; opacity:0.30; metalness:0.2; roughness:0.3"
+            animation="property: material.opacity; dir: alternate; to: 0.12; dur: 1200; loop:true; easing:easeInOutSine"></a-ring>
     <a-circle radius="0.9" rotation="-90 0 0" position="0 0 -3"
-              material="color: #90caf9; opacity: 0.08"></a-circle>
+              material="color:#90caf9; opacity:0.06"></a-circle>
 
-    <!-- ===== Candado 3D (primitivas), rotando lentamente ===== -->
-    <a-entity id="candado" position="0 1.25 -3" animation="property: rotation; to: 0 360 0; loop: true; dur:-->
+    <!-- ===== Candado 3D (primitivas), dinámico ===== -->
+    <a-entity id="candado" position="0 1.25 -3" scale="1 1 1"
+              animation__spin="property: rotation; to: 0 360 0; loop:true; dur: 9000; easing: linear"
+              animation__pulse="property: scale; dir: alternate; to: 1.06 1.06 1.06; dur: 1500; loop:true; easing: easeInOutSine">
+
+      <!-- Arco metálico -->
       <a-torus radius="0.45" radius-tubular="0.06" position="0 0.55 0"
-               material="color:#cfd8dc; metalness:0.8; roughness:0.25"></a-torus>
+               material="color:#cfd8dc; metalness:0.9; roughness:0.25"></a-torus>
       <!-- Soportes del arco -->
       <a-cylinder radius="0.12" height="0.20" position="-0.43 0.25 0"
-                  material="color:#cfd8dc; metalness:0.8; roughness:0.25"></a-cylinder>
+                  material="color:#cfd8dc; metalness:0.9; roughness:0.25"></a-cylinder>
       <a-cylinder radius="0.12" height="0.20" position="0.43 0.25 0"
-                  material="color:#cfd8dc; metalness:0.8; roughness:0.25"></a-cylinder>
+                  material="color:#cfd8dc; metalness:0.9; roughness:0.25"></a-cylinder>
 
-      <!-- Cuerpo (estilo “cubo”) -->
+      <!-- Cuerpo (estilo “cubo” icónico) -->
       <a-box width="1.2" height="1.1" depth="0.5" position="0 -0.2 0"
-             material="color:#ffd54f; metalness:0.2; roughness:0.85"></a-box>
+             material="color:#ffd54f; metalness:0.25; roughness:0.85"></a-box>
 
       <!-- Placa y ranura -->
       <a-box width="0.5" height="0.22" depth="0.04" position="0 -0.2 0.28"
@@ -100,36 +103,107 @@
       <a-box width="0.08" height="0.04" depth="0.02" position="0 -0.2 0.30"
              material="color:#000000"></a-box>
 
-      <!-- Halo/brillo giratorio -->
+      <!-- Aro de brillo superior -->
       <a-ring radius-inner="0.85" radius-outer="0.95" position="0 0.6 0.01"
               material="color:#ffffff; opacity:0.35"
               animation="property: rotation; to: 0 0 360; loop:true; dur:3000; easing:linear"></a-ring>
     </a-entity>
 
-    <!-- Letrero 3D bajo el candado (más llamativo) -->
+    <!-- Letrero 3D bajo el candado -->
     <a-entity position="0 0.35 -3">
-      <a-plane width="2.5" height="0.65" color="#1b2735" opacity="0.95" material="roughness:0.85; metalness:0.1"
-               shadow="cast:true; receive:true"></a-plane>
-      <a-text value="¡Cuidado con el PHISHING!" color="#FFEE58" align="center" width="2.4"
-              position="0 0.12 0.02" shader="msdf"></a-text>
+      <a-plane width="2.6" height="0.7" color="#101a24" opacity="0.95" material="roughness:0.85; metalness:0.1"></a-plane>
+      <a-text value="¡Cuidado con el PHISHING!" color="#FFEE58" align="center" width="2.5" position="0 0.12 0.02"></a-text>
       <a-text value="Verifica remitente y dominio. No hagas clic en enlaces sospechosos."
-              color="#B0BEC5" align="center" width="2.2" position="0 -0.10 0.02"></a-text>
+              color="#B0BEC5" align="center" width="2.3" position="0 -0.10 0.02"></a-text>
     </a-entity>
 
-    <!-- Cámara fija (sin permisos) -->
+    <!-- Cámara fija -->
     <a-entity position="0 1.6 0" camera look-controls="enabled:false"></a-entity>
   </a-scene>
 
-  <!-- Mensaje si A‑Frame no llegó a cargar por la red -->
-  <noscript>Activa JavaScript para ver el candado 3D.</noscript>
+  <!-- Interacciones táctiles: arrastrar para rotar, pellizcar para zoom, tap para 'shake' -->
   <script>
-    // Si en 2s no existe AFRAME o el canvas, mostramos ayuda breve.
+    window.addEventListener('load', function(){
+      var el = document.getElementById('candado');
+      var obj = el.object3D;
+      var sceneEl = document.querySelector('a-scene');
+
+      function onCanvas(cb){
+        if (sceneEl.renderer && sceneEl.canvas) return cb(sceneEl.canvas);
+        sceneEl.addEventListener('render-target-loaded', ()=> cb(sceneEl.canvas));
+      }
+
+      onCanvas(function(canvas){
+        var isDown=false, startX=0, startRotY=0;
+        var pinch=false, startDist=0, startScale=1;
+        var inertia=0, lastX=0, raf=null;
+
+        function d(t){ var dx=t[0].clientX-t[1].clientX, dy=t[0].clientY-t[1].clientY; return Math.hypot(dx,dy); }
+        function clamp(v,min,max){ return Math.max(min, Math.min(max,v)); }
+
+        // Rotación por arrastre (1 dedo / mouse)
+        canvas.addEventListener('pointerdown', e=>{
+          isDown=true; pinch=false; startX=e.clientX; lastX=e.clientX; startRotY=obj.rotation.y;
+          canvas.setPointerCapture(e.pointerId);
+        });
+        canvas.addEventListener('pointermove', e=>{
+          if(!isDown || pinch) return;
+          var dx = e.clientX - startX;
+          obj.rotation.y = startRotY + dx * 0.01;
+          inertia = (e.clientX - lastX) * 0.004;
+          lastX = e.clientX;
+        });
+        canvas.addEventListener('pointerup', e=>{
+          if(isDown){ isDown=false; canvas.releasePointerCapture(e.pointerId); }
+        });
+
+        // Inercia suave al soltar
+        function tick(){
+          if (Math.abs(inertia) > 0.0005) {
+            obj.rotation.y += inertia;
+            inertia *= 0.96;
+            raf = requestAnimationFrame(tick);
+          } else { cancelAnimationFrame(raf); raf=null; }
+        }
+        setInterval(()=>{ if(!raf && Math.abs(inertia)>0.0005) tick(); }, 60);
+
+        // Pellizco (zoom 2 dedos)
+        canvas.addEventListener('touchstart', e=>{
+          if(e.touches.length===2){
+            pinch=true; isDown=false; startDist = d(e.touches);
+            var s = el.getAttribute('scale'); startScale = s.x;
+          }
+        }, {passive:true});
+        canvas.addEventListener('touchmove', e=>{
+          if(pinch && e.touches.length===2){
+            var factor = d(e.touches)/startDist;
+            var newS = clamp(startScale * factor, 0.7, 1.7);
+            el.setAttribute('scale', {x:newS, y:newS, z:newS});
+          }
+        }, {passive:true});
+        canvas.addEventListener('touchend', ()=>{ pinch=false; }, {passive:true});
+
+        // Tap: pequeño 'shake' (alerta)
+        let tapTimer=null; let tapped=false;
+        canvas.addEventListener('click', ()=>{
+          if (tapped) return;
+          tapped=true;
+          el.setAttribute('animation__shake1','property: rotation; to: 0 15 0; dur:100; dir:alternate; loop:4; easing:easeInOutSine');
+          clearTimeout(tapTimer);
+          tapTimer=setTimeout(()=>{ el.removeAttribute('animation__shake1'); tapped=false; }, 600);
+        });
+      });
+    });
+  </script>
+
+  <!-- Aviso si el visor 3D no pudo cargarse (bloqueo CDN) -->
+  <script>
     setTimeout(()=>{
       if (!window.AFRAME || !document.querySelector('canvas')) {
-        alert('No se pudo cargar el visor 3D. Intenta actualizar (Ctrl+F5) o abre en ventana de incógnito. '
-          + 'Si estás en red corporativa, un proxy puede bloquear CDNs. El contenido HTML del aviso seguirá visible.');
+        alert('No se pudo cargar el visor 3D. Prueba recargar (Ctrl+F5) o abrir en incógnito. Si estás en red corporativa, puede que el CDN esté bloqueado.');
       }
-    }, 2000);
+    }, 2200);
   </script>
 </body>
 </html>
+``
