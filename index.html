@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-  <title>Candado 3D + Anti‑Phishing (Optimizado Móvil)</title>
+  <title>Candado 3D • Anti‑Phishing (Optimizado Móvil)</title>
 
   <!-- A‑Frame: CDN principal -->
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
@@ -17,42 +17,93 @@
   </script>
 
   <style>
-    :root { --pad: max(12px, env(safe-area-inset-top)); }
-    html,body { height:100%; margin:0; background:#0d1117; }
-    /* Tarjeta superior llamativa (sin botones) */
-    .banner {
+    :root {
+      --padTop: max(8px, env(safe-area-inset-top));
+      --padBottom: max(12px, env(safe-area-inset-bottom));
+    }
+    html,body { height:100%; margin:0; background:#0b0f14; }
+    /* Tarjeta inferior (no se cruza con el candado) */
+    .banner-bottom{
       position: fixed; left: 50%; transform: translateX(-50%);
-      top: var(--pad); z-index: 10; width: min(960px, 92vw);
+      bottom: calc(8px + var(--padBottom)); z-index: 10;
+      width: min(960px, 92vw);
       background: linear-gradient(135deg, #fff8e1 0%, #ffeaa7 100%);
-      color: #263238; padding: 12px 14px; border-radius: 14px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.28), 0 2px 8px rgba(0,0,0,.12);
+      color: #263238; padding: 12px 16px; border-radius: 16px;
+      box-shadow: 0 14px 32px rgba(0,0,0,.35), 0 4px 10px rgba(0,0,0,.18);
       font: 500 15px/1.45 "Segoe UI", Roboto, system-ui, -apple-system, Arial, sans-serif;
+      animation: pop-in .5s ease-out both, glow 2.4s ease-in-out infinite;
     }
-    .banner .title { display:flex; align-items:center; gap:10px; font-weight:800; font-size:18px; }
-    .badge {
+    .b-title{ display:flex; align-items:center; gap:10px; font-weight:800; font-size:18px; margin-bottom:6px; }
+    .badge{
       display:inline-flex; align-items:center; gap:6px;
-      background:#ff7043; color:#fff; padding:3px 10px; border-radius:999px; font-weight:800; font-size:12px;
-      box-shadow: 0 2px 8px rgba(255,112,67,.45);
+      background:#e53935; color:#fff; padding:3px 10px; border-radius:999px;
+      font-weight:800; font-size:12px; box-shadow: 0 2px 8px rgba(229,57,53,.45);
     }
-    .tips { margin:6px 0 0 0; font-size:14px; color:#37474f; padding-left:18px; }
-    .tips li { margin: 3px 0; }
-    .footer-tag {
-      position: fixed; right: 12px; bottom: 10px; z-index: 10;
-      font: 600 12px/1 "Segoe UI", Roboto, system-ui, -apple-system, Arial, sans-serif;
-      color:#90caf9; opacity:.9;
-    }
-    /* Asegura que el lienzo 3D llene la pantalla bajo la tarjeta */
-    a-scene { position: fixed; inset: 0; }
+    .tips{ margin:0; padding-left:18px; color:#37474f; }
+    .tips li{ margin:3px 0; }
+    @keyframes pop-in { from{ transform: translate(-50%, 8px) scale(.98); opacity:.0 } to{ transform: translate(-50%,0) scale(1); opacity:1 } }
+    @keyframes glow { 0%,100%{ box-shadow: 0 14px 32px rgba(0,0,0,.35), 0 0 0 0 rgba(255,234,167,.0) } 50%{ box-shadow: 0 14px 32px rgba(0,0,0,.35), 0 0 28px 0 rgba(255,234,167,.55) } }
+    /* El lienzo 3D ocupa toda la pantalla; la tarjeta queda por encima, abajo */
+    a-scene{ position: fixed; inset: 0; }
   </style>
 </head>
 <body>
 
-  <!-- Tarjeta de alerta (HTML) -->
-  <div class="banner" role="region" aria-label="Alerta de Seguridad">
-    <div class="title">
-      <span class="badge">⚠ PHISHING</span>
-      <span>Protege tu información</span>
-    </div>
+  <!-- ESCENA 3D (sin cámara, sin aro azul) -->
+  <a-scene renderer="antialias:true; colorManagement:true" background="color: #0b0f14">
+    <!-- Luces principales -->
+    <a-entity light="type: ambient; color:#b0bec5; intensity:1.0"></a-entity>
+    <a-entity light="type: directional; color:#ffffff; intensity:0.9" position="1 2 1"></a-entity>
+
+    <!-- Luz que orbita (efecto dinámico sobre el candado) -->
+    <a-entity id="orbital" position="0 1.35 -3" animation="property: rotation; to: 0 360 0; loop:true; dur: 5000; easing: linear">
+      <a-entity light="type: point; color:#00e5ff; intensity:0.9; distance:4" position="1 0.3 0"></a-entity>
+    </a-entity>
+
+    <!-- ===== Candado 3D (sin base), centrado y más “wow” ===== -->
+    <a-entity id="candado" position="0 1.35 -3" scale="1 1 1"
+              animation__spin="property: rotation; to: 0 360 0; loop:true; dur: 8500; easing: linear"
+              animation__pulse="property: scale; dir: alternate; to: 1.07 1.07 1.07; dur: 1400; loop:true; easing: easeInOutSine">
+
+      <!-- Arco metálico con brillo (emissive) -->
+      <a-torus radius="0.45" radius-tubular="0.06" position="0 0.55 0"
+               material="color:#cfd8dc; metalness:0.95; roughness:0.2; emissive:#59f1ff; emissiveIntensity:0.08"></a-torus>
+      <!-- Soportes del arco -->
+      <a-cylinder radius="0.12" height="0.20" position="-0.43 0.25 0"
+                  material="color:#cfd8dc; metalness:0.95; roughness:0.25"></a-cylinder>
+      <a-cylinder radius="0.12" height="0.20" position="0.43 0.25 0"
+                  material="color:#cfd8dc; metalness:0.95; roughness:0.25"></a-cylinder>
+
+      <!-- Cuerpo (estética tipo “cubo” icónico) -->
+      <a-box width="1.2" height="1.1" depth="0.5" position="0 -0.2 0"
+             material="color:#ffd54f; metalness:0.28; roughness:0.85"></a-box>
+
+      <!-- Placa y ranura -->
+      <a-box width="0.52" height="0.22" depth="0.04" position="0 -0.2 0.28"
+             material="color:#5d4037; metalness:0.25; roughness:0.55"></a-box>
+      <a-box width="0.08" height="0.04" depth="0.02" position="0 -0.2 0.30"
+             material="color:#000000"></a-box>
+    </a-entity>
+
+    <!-- Partículas sutiles para “enganchar la vista” -->
+    <a-entity id="sparks">
+      <a-sphere radius="0.015" color="#82e9de" position="-0.5 0.6 -3"
+                material="opacity:0.9" animation="property: position; to: -0.5 1.8 -3; dur: 2600; loop: true; easing: easeOutCubic"></a-sphere>
+      <a-sphere radius="0.012" color="#90caf9" position="0.6 0.5 -3"
+                material="opacity:0.8" animation="property: position; to: 0.6 1.7 -3; dur: 2300; loop: true; easing: easeOutCubic; delay: 400"></a-sphere>
+      <a-sphere radius="0.01" color="#b388ff" position="0.1 0.7 -3"
+                material="opacity:0.85" animation="property: position; to: 0.1 1.9 -3; dur: 2800; loop: true; easing: easeOutCubic; delay: 800"></a-sphere>
+      <a-sphere radius="0.014" color="#80deea" position="-0.2 0.4 -3"
+                material="opacity:0.85" animation="property: position; to: -0.2 1.6 -3; dur: 2400; loop: true; easing: easeOutCubic; delay: 1200"></a-sphere>
+    </a-entity>
+
+    <!-- Cámara fija (no requiere permisos) -->
+    <a-entity position="0 1.6 0" camera look-controls="enabled:false"></a-entity>
+  </a-scene>
+
+  <!-- Tarjeta con mensaje (abajo, no tapa el candado) -->
+  <div class="banner-bottom" role="region" aria-label="Consejos Anti‑Phishing">
+    <div class="b-title"><span class="badge">⚠ PHISHING</span> <span>Protege tu información</span></div>
     <ul class="tips">
       <li><b>Verifica</b> remitente y <b>dominio</b> antes de responder.</li>
       <li><b>No</b> abras enlaces ni archivos sospechosos.</li>
@@ -60,68 +111,7 @@
     </ul>
   </div>
 
-  <div class="footer-tag">Semana de Seguridad • Concientización</div>
-
-  <!-- Escena 3D (sin cámara) -->
-  <a-scene renderer="antialias:true; colorManagement:true" background="color: #0d1117">
-    <!-- Luces -->
-    <a-entity light="type: ambient; color: #b0bec5; intensity: 1.0"></a-entity>
-    <a-entity light="type: directional; color: #ffffff; intensity: 0.9" position="1 2 1"></a-entity>
-    <!-- Luz que orbita alrededor del candado -->
-    <a-entity id="orbital" position="0 1.25 -3" animation="property: rotation; to: 0 360 0; loop:true; dur: 6000; easing: linear">
-      <a-entity light="type: point; color:#00e5ff; intensity:0.7; distance:5" position="1 0.3 0"></a-entity>
-    </a-entity>
-
-    <!-- Base holográfica (más viva) -->
-    <a-ring radius-inner="0.9" radius-outer="1.2" rotation="-90 0 0" position="0 0 -3"
-            material="color:#00e5ff; opacity:0.30; metalness:0.2; roughness:0.3"
-            animation="property: material.opacity; dir: alternate; to: 0.12; dur: 1200; loop:true; easing:easeInOutSine"></a-ring>
-    <a-circle radius="0.9" rotation="-90 0 0" position="0 0 -3"
-              material="color:#90caf9; opacity:0.06"></a-circle>
-
-    <!-- ===== Candado 3D (primitivas), dinámico ===== -->
-    <a-entity id="candado" position="0 1.25 -3" scale="1 1 1"
-              animation__spin="property: rotation; to: 0 360 0; loop:true; dur: 9000; easing: linear"
-              animation__pulse="property: scale; dir: alternate; to: 1.06 1.06 1.06; dur: 1500; loop:true; easing: easeInOutSine">
-
-      <!-- Arco metálico -->
-      <a-torus radius="0.45" radius-tubular="0.06" position="0 0.55 0"
-               material="color:#cfd8dc; metalness:0.9; roughness:0.25"></a-torus>
-      <!-- Soportes del arco -->
-      <a-cylinder radius="0.12" height="0.20" position="-0.43 0.25 0"
-                  material="color:#cfd8dc; metalness:0.9; roughness:0.25"></a-cylinder>
-      <a-cylinder radius="0.12" height="0.20" position="0.43 0.25 0"
-                  material="color:#cfd8dc; metalness:0.9; roughness:0.25"></a-cylinder>
-
-      <!-- Cuerpo (estilo “cubo” icónico) -->
-      <a-box width="1.2" height="1.1" depth="0.5" position="0 -0.2 0"
-             material="color:#ffd54f; metalness:0.25; roughness:0.85"></a-box>
-
-      <!-- Placa y ranura -->
-      <a-box width="0.5" height="0.22" depth="0.04" position="0 -0.2 0.28"
-             material="color:#5d4037; metalness:0.2; roughness:0.6"></a-box>
-      <a-box width="0.08" height="0.04" depth="0.02" position="0 -0.2 0.30"
-             material="color:#000000"></a-box>
-
-      <!-- Aro de brillo superior -->
-      <a-ring radius-inner="0.85" radius-outer="0.95" position="0 0.6 0.01"
-              material="color:#ffffff; opacity:0.35"
-              animation="property: rotation; to: 0 0 360; loop:true; dur:3000; easing:linear"></a-ring>
-    </a-entity>
-
-    <!-- Letrero 3D bajo el candado -->
-    <a-entity position="0 0.35 -3">
-      <a-plane width="2.6" height="0.7" color="#101a24" opacity="0.95" material="roughness:0.85; metalness:0.1"></a-plane>
-      <a-text value="¡Cuidado con el PHISHING!" color="#FFEE58" align="center" width="2.5" position="0 0.12 0.02"></a-text>
-      <a-text value="Verifica remitente y dominio. No hagas clic en enlaces sospechosos."
-              color="#B0BEC5" align="center" width="2.3" position="0 -0.10 0.02"></a-text>
-    </a-entity>
-
-    <!-- Cámara fija -->
-    <a-entity position="0 1.6 0" camera look-controls="enabled:false"></a-entity>
-  </a-scene>
-
-  <!-- Interacciones táctiles: arrastrar para rotar, pellizcar para zoom, tap para 'shake' -->
+  <!-- Interacciones táctiles: arrastrar (rotar) y pellizcar (zoom) -->
   <script>
     window.addEventListener('load', function(){
       var el = document.getElementById('candado');
@@ -177,33 +167,22 @@
         canvas.addEventListener('touchmove', e=>{
           if(pinch && e.touches.length===2){
             var factor = d(e.touches)/startDist;
-            var newS = clamp(startScale * factor, 0.7, 1.7);
+            var newS = clamp(startScale * factor, 0.75, 1.7);
             el.setAttribute('scale', {x:newS, y:newS, z:newS});
           }
         }, {passive:true});
         canvas.addEventListener('touchend', ()=>{ pinch=false; }, {passive:true});
-
-        // Tap: pequeño 'shake' (alerta)
-        let tapTimer=null; let tapped=false;
-        canvas.addEventListener('click', ()=>{
-          if (tapped) return;
-          tapped=true;
-          el.setAttribute('animation__shake1','property: rotation; to: 0 15 0; dur:100; dir:alternate; loop:4; easing:easeInOutSine');
-          clearTimeout(tapTimer);
-          tapTimer=setTimeout(()=>{ el.removeAttribute('animation__shake1'); tapped=false; }, 600);
-        });
       });
     });
   </script>
 
-  <!-- Aviso si el visor 3D no pudo cargarse (bloqueo CDN) -->
+  <!-- Aviso si el visor 3D no cargó (por bloqueo CDN/caché) -->
   <script>
     setTimeout(()=>{
       if (!window.AFRAME || !document.querySelector('canvas')) {
-        alert('No se pudo cargar el visor 3D. Prueba recargar (Ctrl+F5) o abrir en incógnito. Si estás en red corporativa, puede que el CDN esté bloqueado.');
+        alert('No se pudo cargar el visor 3D. Recarga (Ctrl+F5) o abre en incógnito. En red corporativa, el CDN puede estar bloqueado.');
       }
     }, 2200);
   </script>
 </body>
 </html>
-``
