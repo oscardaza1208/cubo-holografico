@@ -2,36 +2,20 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>WebAR Seguridad</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prueba A-Frame (sin AR)</title>
 
-  <!-- Scripts correctos -->
+  <!-- ETIQUETAS CORRECTAS DE SCRIPT -->
   <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
 
-  <style>
-    body { margin: 0; overflow: hidden; }
-  </style>
+  <style>body{margin:0;}</style>
 </head>
-
 <body>
-  <a-scene embedded arjs>
-
-    <!-- Modelo 3D externo -->
-    <a-entity 
-      gltf-model="url(https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb)"
-      position="0 0 0"
-      scale="0.4 0.4 0.4"
-      animation-mixer>
-    </a-entity>
-
-    <a-text 
-      value="Protege tu información"
-      position="-1 1 -1"
-      color="yellow"
-      width="4">
-    </a-text>
-
+  <!-- Escena básica para comprobar que A-Frame carga -->
+  <a-scene>
+    <a-box position="0 1 -3" rotation="0 45 0" color="#4CC3D9" animation="property: rotation; to: 0 405 0; loop: true; dur: 4000"></a-box>
+    <a-sky color="#222"></a-sky>
+    <a-entity position="0 1.6 0" camera></a-entity>
   </a-scene>
 </body>
 </html>
