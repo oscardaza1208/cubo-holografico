@@ -3,29 +3,34 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>WebAR Seguridad - Modelo Externo</title>
+  <title>WebAR Seguridad</title>
 
-  https://aframe.io/releases/1.3.0/aframe.min.js</script>
-  https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+  <!-- Scripts correctos -->
+  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
 
-  <style>body{margin:0;overflow:hidden}</style>
+  <style>
+    body { margin: 0; overflow: hidden; }
+  </style>
 </head>
 
 <body>
   <a-scene embedded arjs>
 
-    <!-- Modelo 3D cargado desde URL externa (no requiere subir .glb) -->
+    <!-- Modelo 3D externo -->
     <a-entity 
-      gltf-model="url(https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/AntiqueCamera/glTF-Binary/AntiqueCamera.glb)" 
+      gltf-model="url(https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb)"
       position="0 0 0"
-      scale="0.3 0.3 0.3"
+      scale="0.4 0.4 0.4"
       animation-mixer>
     </a-entity>
 
-    <a-text value="Protege tu información"
-            position="-1 1 -1"
-            color="yellow"
-            width="4"></a-text>
+    <a-text 
+      value="Protege tu información"
+      position="-1 1 -1"
+      color="yellow"
+      width="4">
+    </a-text>
 
   </a-scene>
 </body>
