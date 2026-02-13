@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>WebAR Seguridad</title>
+
+  https://aframe.io/releases/1.3.0/aframe.min.js</script>
+  </aframe/build/aframe-ar.js"></script>
+
+  <style>body{margin:0;overflow:hidden}</style>
+</head>
+
+<body>
+  <a-scene embedded arjs>
+    <a-entity 
+      gltf-model="url(modelo.glb)" 
+      position="0 0 0" 
+      scale="0.6 0.6 0.6"
+      animation-mixer>
+    </a-entity>
+
+    <a-text value="Seguridad de la Información"
+            position="-0.8 1 -1"
+            color="yellow"
+            width="4"></a-text>
+  </a-scene>
+</body>
+</html>
