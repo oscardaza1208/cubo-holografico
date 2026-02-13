@@ -3,23 +3,35 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prueba A‑Frame (sin AR)</title>
+  <title>WebAR Seguridad (sin marcador)</title>
 
-  <!-- ETIQUETAS DE SCRIPT CORRECTAS -->
+  <!-- Librerías con etiquetas correctas y CDN alternativo -->
   <script src="https://unpkg.com/aframe@1.5.0/dist/aframe.min.js"></script>
+  <script src="https://unpkg.com/ar.js/aframe/build/aframe-ar.js"></script>
 
-  <style>body{margin:0;}</style>
+  <style>body{margin:0; overflow:hidden}</style>
 </head>
 <body>
-  <!-- Escena básica para comprobar que A‑Frame carga -->
-  <a-scene>
-    <a-box position="0 1 -3"
-           rotation="0 45 0"
-           color="#4CC3D9"
-           animation="property: rotation; to: 0 405 0; loop: true; dur: 4000"></a-box>
-    <a-sky color="#222"></a-sky>
-    <a-entity position="0 1.6 0" camera></a-entity>
+  <!-- Escena AR sin marcador; coloca el modelo a ~2m frente a la cámara -->
+  <a-scene
+    embedded
+    renderer="antialias: true; alpha: true"
+    vr-mode-ui="enabled: false"
+    arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
+  >
+    <!-- Modelo 3D externo (no subes .glb al repo) -->
+    <a-entity
+      gltf-model="url(https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb)"
+      position="0 0 -2"
+      scale="0.4 0.4 0.4"
+      animation-mixer
+    ></a-entity>
+
+    <a-entity position="0 0.5 -2">
+      <a-text value="Protege tu información" color="yellow" align="center" width="3"></a-text>
+    </a-entity>
+
+    <a-entity camera></a-entity>
   </a-scene>
 </body>
 </html>
-``
