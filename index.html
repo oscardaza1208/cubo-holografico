@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Candado + Mensaje Anti‑Phishing (sin cámara)</title>
 
-  <!-- A‑Frame (solo render 3D, sin AR, no pide cámara) -->
+  <!-- CARGA CORRECTA DE A‑FRAME -->
   <script src="https://unpkg.com/aframe@1.5.0/dist/aframe.min.js"></script>
 
   <style>
@@ -22,27 +22,29 @@
   </style>
 </head>
 <body>
-  <!-- Mensaje anti‑phishing (texto claro, sin depender del 3D) -->
+  <!-- Mensaje anti‑phishing (HTML, visible de inmediato) -->
   <div class="banner">
-    ¡Alerta de PHISHING! Verifica remitente y dominio. No hagas clic en enlaces sospechosos. 
+    ¡Alerta de PHISHING! Verifica remitente y dominio. No hagas clic en enlaces sospechosos.
     <small>Si dudas, reporta al equipo de Seguridad de la Información.</small>
   </div>
 
-  <!-- Escena 3D (sin AR) -->
+  <!-- Escena 3D (NO usa cámara, NO usa AR.js) -->
   <a-scene renderer="antialias: true" background="color: #202329">
-    <!-- Luz ambiental y direccional para dar volumen -->
+    <!-- Luces para volumen -->
     <a-entity light="type: ambient; color: #BBB"></a-entity>
     <a-entity light="type: directional; color: #FFF; intensity: 0.9" position="1 2 1"></a-entity>
 
-    <!-- Piso sutil para referencia -->
+    <!-- Piso sutil -->
     <a-circle color="#1b1e22" radius="3" rotation="-90 0 0" position="0 0 -2.5"></a-circle>
 
     <!-- ===== CANDADO 3D (primitivas) ===== -->
-    <a-entity position="0 1.2 -3" id="candado" animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear">
+    <a-entity position="0 1.2 -3" id="candado"
+              animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear">
+
       <!-- Arco metálico -->
       <a-torus radius="0.45" radius-tubular="0.06" position="0 0.55 0"
                material="color: #cfd8dc; metalness: 0.7; roughness: 0.25"></a-torus>
-      <!-- Puntos de anclaje del arco (cilindros) -->
+      <!-- Puntos de anclaje del arco -->
       <a-cylinder radius="0.12" height="0.20" position="-0.43 0.25 0"
                   material="color: #cfd8dc; metalness: 0.7; roughness: 0.25"></a-cylinder>
       <a-cylinder radius="0.12" height="0.20" position="0.43 0.25 0"
@@ -52,28 +54,26 @@
       <a-box width="1.2" height="1.1" depth="0.5" position="0 -0.2 0"
              material="color: #ffd54f; metalness: 0.15; roughness: 0.85"></a-box>
 
-      <!-- Placa frontal -->
+      <!-- Placa frontal + ranura -->
       <a-box width="0.5" height="0.22" depth="0.04" position="0 -0.2 0.28"
              material="color: #5d4037; metalness: 0.2; roughness: 0.6"></a-box>
-      <!-- Ranura -->
       <a-box width="0.08" height="0.04" depth="0.02" position="0 -0.2 0.30"
              material="color: #000"></a-box>
 
-      <!-- Halo de brillo girando para efecto “holograma” -->
+      <!-- Halo de brillo girando -->
       <a-ring radius-inner="0.85" radius-outer="0.9" position="0 0.6 0.01"
               material="color: #ffffff; opacity: 0.35"
-              animation="property: rotation; to: 0 0 360; loop: true; dur: 3000; easing: linear">
-      </a-ring>
+              animation="property: rotation; to: 0 0 360; loop: true; dur: 3000; easing: linear"></a-ring>
     </a-entity>
 
-    <!-- Texto 3D complementario bajo el candado -->
+    <!-- Cartel 3D debajo del candado -->
     <a-entity position="0 0.3 -3">
       <a-plane width="2.3" height="0.6" color="#263238" opacity="0.9"></a-plane>
       <a-text value="Protege tu información — Cuidado con el PHISHING"
               align="center" color="#FFEE58" width="2.2" position="0 0 0.02"></a-text>
     </a-entity>
 
-    <!-- Cámara (estática, no requiere permisos) -->
+    <!-- Cámara fija (sin permisos) -->
     <a-entity position="0 1.6 0" camera look-controls="enabled: false"></a-entity>
   </a-scene>
 </body>
