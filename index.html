@@ -3,35 +3,88 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WebAR Seguridad (sin marcador)</title>
+  <title>WebAR Seguridad (Candado + Phishing)</title>
 
-  <!-- Librerías con etiquetas correctas y CDN alternativo -->
+  <!-- Librerías (etiquetas correctas) -->
   <script src="https://unpkg.com/aframe@1.5.0/dist/aframe.min.js"></script>
   <script src="https://unpkg.com/ar.js/aframe/build/aframe-ar.js"></script>
 
-  <style>body{margin:0; overflow:hidden}</style>
+  <style>
+    body { margin:0; overflow:hidden; }
+    /* Panel de ayuda si la cámara no arranca */
+    #msg{
+      position:fixed; left:0; right:0; top:0; z-index:9999;
+      padding:10px 14px; font:14px/1.3 system-ui,Segoe UI,Roboto,Arial;
+      color:#111; background:#ffef9f; display:none;
+    }
+  </style>
 </head>
 <body>
-  <!-- Escena AR sin marcador; coloca el modelo a ~2m frente a la cámara -->
+  <div id="msg"></div>
+
+  <!-- AR sin marcador: el objeto aparece ~2m al frente -->
   <a-scene
     embedded
-    renderer="antialias: true; alpha: true"
-    vr-mode-ui="enabled: false"
-    arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
+    renderer="antialias:true; alpha:true; logarithmicDepthBuffer:true"
+    vr-mode-ui="enabled:false"
+    arjs="sourceType: webcam; facingMode: environment; debugUIEnabled:false;"
   >
-    <!-- Modelo 3D externo (no subes .glb al repo) -->
-    <a-entity
-      gltf-model="url(https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb)"
-      position="0 0 -2"
-      scale="0.4 0.4 0.4"
-      animation-mixer
-    ></a-entity>
+    <!-- ====== Candado 3D construido con primitivas ====== -->
+    <a-entity position="0 0 -2" rotation="0 0 0" id="candado">
 
-    <a-entity position="0 0.5 -2">
-      <a-text value="Protege tu información" color="yellow" align="center" width="3"></a-text>
+      <!-- Arco del candado (U) -->
+      <a-torus radius="0.20" radius-tubular="0.03"
+               position="0 0.18 0"
+               material="color:#cfd8dc; metalness:0.6; roughness:0.3">
+      </a-torus>
+      <!-- Tapas del arco (para que parezca 'U' abierta por abajo) -->
+      <a-cylinder radius="0.055" height="0.10" position="-0.175 0.05 0"
+                  material="color:#cfd8dc; metalness:0.6; roughness:0.3"></a-cylinder>
+      <a-cylinder radius="0.055" height="0.10" position="0.175 0.05 0"
+                  material="color:#cfd8dc; metalness:0.6; roughness:0.3"></a-cylinder>
+
+      <!-- Cuerpo del candado -->
+      <a-box depth="0.28" width="0.42" height="0.42" position="0 -0.10 0"
+             material="color:#ffd54f; metalness:0.1; roughness:0.8"></a-box>
+
+      <!-- Placa/ranura -->
+      <a-box depth="0.02" width="0.16" height="0.08" position="0 -0.10 0.15"
+             material="color:#5d4037; metalness:0.2; roughness:0.7"></a-box>
+      <a-box depth="0.01" width="0.03" height="0.02" position="0 -0.10 0.16"
+             material="color:#000000; metalness:0.3; roughness:0.4"></a-box>
+
+      <!-- Brillo sutil girando -->
+      <a-ring radius-inner="0.27" radius-outer="0.29" position="0 0.18 0.01"
+              material="color:#ffffff; opacity:0.35"
+              animation="property: rotation; to: 0 0 360; loop:true; dur:3000; easing:linear">
+      </a-ring>
+
     </a-entity>
 
+    <!-- ====== Cartel de mensaje contra phishing ====== -->
+    <a-entity position="0 -0.4 -2">
+      <a-plane width="1.6" height="0.6" color="#fff8e1" material="opacity:0.95"></a-plane>
+      <a-text value="¡Alerta de PHISHING!\n• Verifica remitente y dominio\n• No abras enlaces sospechosos\n• Reporta a Seguridad TI"
+              align="center" color="#37474f" width="2.2" position="0 0 0.01">
+      </a-text>
+    </a-entity>
+
+    <!-- Cámara -->
     <a-entity camera></a-entity>
   </a-scene>
+
+  <!-- Ayuda si la cámara no inicia -->
+  <script>
+    (function(){
+      const show = t => { const el = document.getElementById('msg'); el.textContent = t; el.style.display = 'block'; };
+      // Si en 5s no hay video, mostramos guía rápida
+      setTimeout(()=>{
+        const v = document.querySelector('video');
+        if (!v || v.readyState < 2) {
+          show('No se pudo acceder a la cámara. Verifica permisos en el candado de la barra del navegador. En móviles usa Chrome/Android o Safari/iOS y permite Cámara.');
+        }
+      }, 5000);
+    })();
+  </script>
 </body>
 </html>
